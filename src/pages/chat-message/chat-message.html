@@ -1,0 +1,55 @@
+<ion-header>
+    <ion-navbar>
+      <ion-title>{{toUser.username}}</ion-title>
+    </ion-navbar>
+  </ion-header>
+  <ion-content>
+    <div *ngFor="let message of messages" class="message-wrapper" on-hold="onMessageHold($event, $index, message)">
+      <!-- 判断消息是发送 -->
+      <div *ngIf="user.id !== message.userId">
+      <!-- <img (click)="viewProfile(message)" class="profile-pic left" [src]="toUser.pic" onerror="onProfilePicError(this)" /> -->
+        <!--  wave-->
+        <div class="chat-bubble left slide-left">
+          <div class="message" [innerHTML]="message.text" autolinker> </div>
+          <div class="message-detail">
+            <span (click)="viewProfile(message)" class="bold">{{toUser.username}}</span>,
+            <ion-note item-end>{{message.date | date:'HH:mm:ss'| lowercase}}</ion-note>
+          </div>
+        </div>
+      </div>
+  
+      <!-- 判断消息是发送 -->
+      <div *ngIf="user.id === message.userId">
+        <!-- <img (click)="viewProfile(message)" class="profile-pic right" [src]="user.pic" onerror="onProfilePicError(this)" /> -->
+        <div class="chat-bubble right slide-right">
+          <div class="message" [innerHTML]="message.text" autolinker></div>
+          <div class="message-detail">
+            <span (click)="viewProfile(message)" class="bold">{{user.username}}</span>,
+            <ion-note item-end>{{message.date | date:'HH:mm:ss'| lowercase}}</ion-note>
+          </div>
+        </div>
+      </div>
+      <div class="cf"></div>
+    </div>
+
+
+  </ion-content>
+  
+
+  <!-- 底部固定的输入框 -->
+  <ion-footer>
+    <form [formGroup]="messageForm" (submit)="send(chatContent)" novalidate>
+        <ion-list *ngIf = isShowCompletionCandidates>
+          <ion-item *ngFor="let item of items" (click)="copyContentToChatBox(item)"> 
+            {{ item }}
+          </ion-item>
+        </ion-list>
+
+      <ion-item>
+        <!-- <ion-input formControlName="message" [(ngModel)]="chatContent" placeholder="Send {{toUser.username}} a message..."></ion-input> -->
+        <!-- <ion-input  (ionFocus)="showCompletionCandidates()" formControlName="message" [(ngModel)]="chatContent" placeholder="Send {{toUser.username}} a message..." (ionInput)="getItems($event)"></ion-input> -->
+        <ion-searchbar (ionInput)="showCompletionCandidates($event)" formControlName="message" [(ngModel)]="chatContent" placeholder="Send {{toUser.username}} a message..." ></ion-searchbar>
+        <button ion-button clear (click)="send(chatContent)" item-end><ion-icon class="footer-btn" name="send"></ion-icon></button>
+      </ion-item>
+    </form>
+  </ion-footer>
